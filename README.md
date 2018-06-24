@@ -10,4 +10,4 @@ __Set the Pin for the RST and i2c address!__
 MFRC522 mfrc522(0x28, RST_PIN);   // Create MFRC522 instance.
 ```
 
-Credit @ [arozcan](https://github.com/arozcan/MFRC522-I2C-Library)
+Thanks to @ [arozcan](https://github.com/arozcan/MFRC522-I2C-Library) for the Library
