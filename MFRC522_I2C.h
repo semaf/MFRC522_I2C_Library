@@ -6,6 +6,7 @@
  * Rewritten by Søren Thing Andersen (access.thing.dk), fall of 2013 (Translation to English, refactored, comments, anti collision, cascade levels.)
  * Extended by Tom Clement with functionality to write to sector 0 of UID changeable Mifare cards.
  * Extended by Ahmet Remzi Ozcan with I2C functionality.
+ * Author: arozcan @ https://github.com/arozcan/MFRC522-I2C-Library
  * Released into the public domain.
  *
  * Please read this file for an overview and then MFRC522.cpp for comments on the specific functions.
