@@ -3,6 +3,7 @@
 * MFRC522.cpp - Based on ARDUINO RFID MODULE KIT 13.56 MHZ WITH TAGS SPI Library BY COOQROBOT.
 * NOTE: Please also check the comments in MFRC522.h - they provide useful hints and background information.
 * Released into the public domain.
+* Author: arozcan @ https://github.com/arozcan/MFRC522-I2C-Library
 */
 
 #include <Arduino.h>
