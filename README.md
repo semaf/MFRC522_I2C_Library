@@ -1,6 +1,9 @@
 # MFRC522 i2c 
 ### Code is compatible to Arduino and ESP8266 (NodeMCU)
 
+Tested on [https://electronics.semaf.at/MFRC522-i2c-Tiny-Breakout-Board](https://electronics.semaf.at/MFRC522-i2c-Tiny-Breakout-Board)
+![MFRC522 i2c Breakout Board](https://cdn.semaf.at/media/image/product/1748/md/mfrc522-i2c-tiny-breakout-board.jpg "MFRC522 i2c Breakout Board")
+
 __Set the Pin for the RST and i2c address!__
 ```c++
 #define RST_PIN 6 // Arduino UNO
