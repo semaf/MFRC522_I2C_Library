@@ -383,6 +383,9 @@ public:
 	// old function used too much memory, now name moved to flash; if you need char, copy from flash to memory
 	//const char *PICC_GetTypeName(byte type);
 	const __FlashStringHelper *PICC_GetTypeName(byte type);
+
+	// Support functions for debuging
+	void PCD_DumpVersionToSerial();
 	void PICC_DumpToSerial(Uid *uid);
 	void PICC_DumpMifareClassicToSerial(Uid *uid, byte piccType, MIFARE_Key *key);
 	void PICC_DumpMifareClassicSectorToSerial(Uid *uid, MIFARE_Key *key, byte sector);
