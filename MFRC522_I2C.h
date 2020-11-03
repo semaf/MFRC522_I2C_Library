@@ -321,7 +321,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Functions for setting up the Arduino
 	/////////////////////////////////////////////////////////////////////////////////////
-	MFRC522(byte chipAddress, byte resetPowerDownPin, TwoWire TwoWireInstance);
+	MFRC522(byte chipAddress, byte resetPowerDownPin, TwoWire & TwoWireInstance = Wire);
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Basic interface functions for communicating with the MFRC522
@@ -404,7 +404,7 @@ public:
 private:
 	byte _chipAddress;
 	byte _resetPowerDownPin;	// Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)
-	TwoWire _TwoWireInstance;	// TwoWire Instance
+	TwoWire & _TwoWireInstance;	// TwoWire Instance
 	byte MIFARE_TwoStepHelper(byte command, byte blockAddr, long data);
 };
 

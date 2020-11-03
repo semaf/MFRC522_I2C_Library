@@ -20,11 +20,10 @@
  */
 MFRC522::MFRC522(	byte chipAddress,
 					byte resetPowerDownPin,	///< Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)
-					TwoWire TwoWireInstance
-				) {
+					TwoWire * TwoWireInstance
+				) : _TwoWireInstance(TwoWireInstance) {
 	_chipAddress = chipAddress;
 	_resetPowerDownPin = resetPowerDownPin;
-	_TwoWireInstance = TwoWireInstance;
 } // End constructor
 
 
