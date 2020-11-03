@@ -24,7 +24,7 @@ MFRC522::MFRC522(	byte chipAddress,
 				) {
 	_chipAddress = chipAddress;
 	_resetPowerDownPin = resetPowerDownPin;
-	_myWire = TwoWireInstance;
+	_TwoWireInstance = TwoWireInstance;
 } // End constructor
 
 
@@ -39,10 +39,10 @@ MFRC522::MFRC522(	byte chipAddress,
 void MFRC522::PCD_WriteRegister(	byte reg,		///< The register to write to. One of the PCD_Register enums.
 									byte value		///< The value to write.
 								) {
-	_myWire.beginTransmission(_chipAddress);
-	_myWire.write(reg);
-	_myWire.write(value);
-	_myWire.endTransmission();
+	_TwoWireInstance.beginTransmission(_chipAddress);
+	_TwoWireInstance.write(reg);
+	_TwoWireInstance.write(value);
+	_TwoWireInstance.endTransmission();
 } // End PCD_WriteRegister()
 
 /**
@@ -53,12 +53,12 @@ void MFRC522::PCD_WriteRegister(	byte reg,		///< The register to write to. One o
 									byte count,		///< The number of bytes to write to the register
 									byte *values	///< The values to write. Byte array.
 								) {
-	_myWire.beginTransmission(_chipAddress);
-	_myWire.write(reg);
+	_TwoWireInstance.beginTransmission(_chipAddress);
+	_TwoWireInstance.write(reg);
 	for (byte index = 0; index < count; index++) {
-		_myWire.write(values[index]);
+		_TwoWireInstance.write(values[index]);
 	}
-	_myWire.endTransmission();
+	_TwoWireInstance.endTransmission();
 } // End PCD_WriteRegister()
 
 /**
@@ -69,12 +69,12 @@ byte MFRC522::PCD_ReadRegister(	byte reg	///< The register to read from. One of 
 								) {
 	byte value;
 	//digitalWrite(_chipSelectPin, LOW);			// Select slave
-	_myWire.beginTransmission(_chipAddress);
-	_myWire.write(reg);
-	_myWire.endTransmission();
+	_TwoWireInstance.beginTransmission(_chipAddress);
+	_TwoWireInstance.write(reg);
+	_TwoWireInstance.endTransmission();
 
-	_myWire.requestFrom(_chipAddress, 1);
-	value = _myWire.read();
+	_TwoWireInstance.requestFrom(_chipAddress, 1);
+	value = _TwoWireInstance.read();
 	return value;
 } // End PCD_ReadRegister()
 
@@ -92,11 +92,11 @@ void MFRC522::PCD_ReadRegister(	byte reg,		///< The register to read from. One o
 	}
 	byte address = reg;
 	byte index = 0;							// Index in values array.
-	_myWire.beginTransmission(_chipAddress);
-	_myWire.write(address);
-	_myWire.endTransmission();
-	_myWire.requestFrom(_chipAddress, count);
-	while (_myWire.available()) {
+	_TwoWireInstance.beginTransmission(_chipAddress);
+	_TwoWireInstance.write(address);
+	_TwoWireInstance.endTransmission();
+	_TwoWireInstance.requestFrom(_chipAddress, count);
+	while (_TwoWireInstance.available()) {
 		if (index == 0 && rxAlign) {		// Only update bit positions rxAlign..7 in values[0]
 			// Create bit mask for bit positions rxAlign..7
 			byte mask = 0;
@@ -104,12 +104,12 @@ void MFRC522::PCD_ReadRegister(	byte reg,		///< The register to read from. One o
 				mask |= (1 << i);
 			}
 			// Read value and tell that we want to read the same address again.
-			byte value = _myWire.read();
+			byte value = _TwoWireInstance.read();
 			// Apply mask to both current value of values[0] and the new data in value.
 			values[0] = (values[index] & ~mask) | (value & mask);
 		}
 		else { // Normal case
-			values[index] = _myWire.read();
+			values[index] = _TwoWireInstance.read();
 		}
 		index++;
 	}
