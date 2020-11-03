@@ -404,6 +404,7 @@ public:
 private:
 	byte _chipAddress;
 	byte _resetPowerDownPin;	// Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)
+	TwoWire _TwoWireInstance;	// TwoWire Instance
 	byte MIFARE_TwoStepHelper(byte command, byte blockAddr, long data);
 };
 
