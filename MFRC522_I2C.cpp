@@ -22,7 +22,7 @@ MFRC522::MFRC522(	byte chipAddress,
 					byte resetPowerDownPin,	///< Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)
 					TwoWire & TwoWireInstance
 				) : _TwoWireInstance(TwoWireInstance) {
-	_chipAddress = chipAddress;
+	_chipAddress = (uint8_t) chipAddress;
 	_resetPowerDownPin = resetPowerDownPin;
 } // End constructor
 
@@ -52,8 +52,12 @@ void MFRC522::PCD_WriteRegister(	byte reg,		///< The register to write to. One o
 									byte count,		///< The number of bytes to write to the register
 									byte *values	///< The values to write. Byte array.
 								) {
+	if (count == 0) {
+		return;
+	}
+	uint8_t regist = (uint8_t) reg;
 	_TwoWireInstance.beginTransmission(_chipAddress);
-	_TwoWireInstance.write(reg);
+	_TwoWireInstance.write(regist);
 	for (byte index = 0; index < count; index++) {
 		_TwoWireInstance.write(values[index]);
 	}
@@ -67,12 +71,15 @@ void MFRC522::PCD_WriteRegister(	byte reg,		///< The register to write to. One o
 byte MFRC522::PCD_ReadRegister(	byte reg	///< The register to read from. One of the PCD_Register enums.
 								) {
 	byte value;
+	uint8_t _size = 1;
+	uint8_t regist;
+	regist = (uint8_t) reg;
 	//digitalWrite(_chipSelectPin, LOW);			// Select slave
 	_TwoWireInstance.beginTransmission(_chipAddress);
-	_TwoWireInstance.write(reg);
+	_TwoWireInstance.write(regist);
 	_TwoWireInstance.endTransmission();
 
-	_TwoWireInstance.requestFrom(_chipAddress, 1);
+	_TwoWireInstance.requestFrom(_chipAddress, _size);
 	value = _TwoWireInstance.read();
 	return value;
 } // End PCD_ReadRegister()
@@ -89,12 +96,13 @@ void MFRC522::PCD_ReadRegister(	byte reg,		///< The register to read from. One o
 	if (count == 0) {
 		return;
 	}
-	byte address = reg;
+	uint8_t _count = (uint8_t) count;
+	uint8_t regist = (uint8_t) reg;
 	byte index = 0;							// Index in values array.
 	_TwoWireInstance.beginTransmission(_chipAddress);
-	_TwoWireInstance.write(address);
+	_TwoWireInstance.write(regist);
 	_TwoWireInstance.endTransmission();
-	_TwoWireInstance.requestFrom(_chipAddress, count);
+	_TwoWireInstance.requestFrom(_chipAddress, _count);
 	while (_TwoWireInstance.available()) {
 		if (index == 0 && rxAlign) {		// Only update bit positions rxAlign..7 in values[0]
 			// Create bit mask for bit positions rxAlign..7
@@ -181,8 +189,6 @@ byte MFRC522::PCD_CalculateCRC(	byte *data,		///< In: Pointer to the data to tra
  * Initializes the MFRC522 chip.
  */
 void MFRC522::PCD_Init() {
-	// Set the chipSelectPin as digital output, do not select the slave yet
-
 	// Set the resetPowerDownPin as digital output, do not reset or power down.
 	pinMode(_resetPowerDownPin, OUTPUT);
 
@@ -190,7 +196,7 @@ void MFRC522::PCD_Init() {
 	if (digitalRead(_resetPowerDownPin) == LOW) {	//The MFRC522 chip is in power down mode.
 		digitalWrite(_resetPowerDownPin, HIGH);		// Exit power down mode. This triggers a hard reset.
 		// Section 8.8.2 in the datasheet says the oscillator start-up time is the start up time of the crystal + 37,74�s. Let us be generous: 50ms.
-		delay(50);
+		delay(100);
 	}
 	else { // Perform a soft reset
 		PCD_Reset();
@@ -220,6 +226,7 @@ void MFRC522::PCD_Reset() {
 	delay(50);
 	// Wait for the PowerDown bit in CommandReg to be cleared
 	while (PCD_ReadRegister(CommandReg) & (1<<4)) {
+		Serial.println("PCD Still restarting after SoftReset");
 		// PCD still restarting - unlikely after waiting 50ms, but better safe than sorry.
 	}
 } // End PCD_Reset()

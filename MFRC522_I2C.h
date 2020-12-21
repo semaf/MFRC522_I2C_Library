@@ -402,7 +402,7 @@ public:
 	bool PICC_ReadCardSerial();
 
 private:
-	byte _chipAddress;
+	uint16_t _chipAddress;
 	byte _resetPowerDownPin;	// Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)
 	TwoWire & _TwoWireInstance;	// TwoWire Instance
 	byte MIFARE_TwoStepHelper(byte command, byte blockAddr, long data);
