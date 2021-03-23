@@ -20,10 +20,11 @@
  */
 MFRC522::MFRC522(	byte chipAddress,
 					byte resetPowerDownPin,	///< Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)
-					TwoWire & TwoWireInstance
-				) : _TwoWireInstance(TwoWireInstance) {
+					TwoWire *TwoWireInstance
+				) {
 	_chipAddress = (uint8_t) chipAddress;
 	_resetPowerDownPin = resetPowerDownPin;
+	_TwoWireInstance = TwoWireInstance;
 } // End constructor
 
 
@@ -38,10 +39,10 @@ MFRC522::MFRC522(	byte chipAddress,
 void MFRC522::PCD_WriteRegister(	byte reg,		///< The register to write to. One of the PCD_Register enums.
 									byte value		///< The value to write.
 								) {
-	_TwoWireInstance.beginTransmission(_chipAddress);
-	_TwoWireInstance.write(reg);
-	_TwoWireInstance.write(value);
-	_TwoWireInstance.endTransmission();
+	_TwoWireInstance->beginTransmission(_chipAddress);
+	_TwoWireInstance->write(reg);
+	_TwoWireInstance->write(value);
+	_TwoWireInstance->endTransmission();
 } // End PCD_WriteRegister()
 
 /**
@@ -56,12 +57,12 @@ void MFRC522::PCD_WriteRegister(	byte reg,		///< The register to write to. One o
 		return;
 	}
 	uint8_t regist = (uint8_t) reg;
-	_TwoWireInstance.beginTransmission(_chipAddress);
-	_TwoWireInstance.write(regist);
+	_TwoWireInstance->beginTransmission(_chipAddress);
+	_TwoWireInstance->write(regist);
 	for (byte index = 0; index < count; index++) {
-		_TwoWireInstance.write(values[index]);
+		_TwoWireInstance->write(values[index]);
 	}
-	_TwoWireInstance.endTransmission();
+	_TwoWireInstance->endTransmission();
 } // End PCD_WriteRegister()
 
 /**
@@ -75,12 +76,12 @@ byte MFRC522::PCD_ReadRegister(	byte reg	///< The register to read from. One of 
 	uint8_t regist;
 	regist = (uint8_t) reg;
 	//digitalWrite(_chipSelectPin, LOW);			// Select slave
-	_TwoWireInstance.beginTransmission(_chipAddress);
-	_TwoWireInstance.write(regist);
-	_TwoWireInstance.endTransmission();
+	_TwoWireInstance->beginTransmission(_chipAddress);
+	_TwoWireInstance->write(regist);
+	_TwoWireInstance->endTransmission();
 
-	_TwoWireInstance.requestFrom(_chipAddress, _size);
-	value = _TwoWireInstance.read();
+	_TwoWireInstance->requestFrom(_chipAddress, _size);
+	value = _TwoWireInstance->read();
 	return value;
 } // End PCD_ReadRegister()
 
@@ -99,11 +100,11 @@ void MFRC522::PCD_ReadRegister(	byte reg,		///< The register to read from. One o
 	uint8_t _count = (uint8_t) count;
 	uint8_t regist = (uint8_t) reg;
 	byte index = 0;							// Index in values array.
-	_TwoWireInstance.beginTransmission(_chipAddress);
-	_TwoWireInstance.write(regist);
-	_TwoWireInstance.endTransmission();
-	_TwoWireInstance.requestFrom(_chipAddress, _count);
-	while (_TwoWireInstance.available()) {
+	_TwoWireInstance->beginTransmission(_chipAddress);
+	_TwoWireInstance->write(regist);
+	_TwoWireInstance->endTransmission();
+	_TwoWireInstance->requestFrom(_chipAddress, _count);
+	while (_TwoWireInstance->available()) {
 		if (index == 0 && rxAlign) {		// Only update bit positions rxAlign..7 in values[0]
 			// Create bit mask for bit positions rxAlign..7
 			byte mask = 0;
@@ -111,12 +112,12 @@ void MFRC522::PCD_ReadRegister(	byte reg,		///< The register to read from. One o
 				mask |= (1 << i);
 			}
 			// Read value and tell that we want to read the same address again.
-			byte value = _TwoWireInstance.read();
+			byte value = _TwoWireInstance->read();
 			// Apply mask to both current value of values[0] and the new data in value.
 			values[0] = (values[index] & ~mask) | (value & mask);
 		}
 		else { // Normal case
-			values[index] = _TwoWireInstance.read();
+			values[index] = _TwoWireInstance->read();
 		}
 		index++;
 	}
