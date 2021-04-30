@@ -816,7 +816,7 @@ byte MFRC522::PCD_Authenticate(byte command,		///< PICC_CMD_MF_AUTH_KEY_A or PIC
 		sendData[2+i] = key->keyByte[i];
 	}
 	for (byte i = 0; i < 4; i++) {				// The first 4 bytes of the UID
-		sendData[8+i] = uid->uidByte[i];
+		sendData[8+i] = uid->uidByte[i+uid->size-4];
 	}
 
 	// Start the authentication.
